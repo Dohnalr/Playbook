@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Draggable from 'react-draggable';
 
-function Player({ id, initialPosition, playerName, selectedPlayer, onSelect, route }) {
+function Player({ id, initialPosition, onMove,playerName, selectedPlayer, onSelect, route }) {
   const [name, setName] = useState(playerName);
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(playerName);
@@ -12,6 +12,10 @@ function Player({ id, initialPosition, playerName, selectedPlayer, onSelect, rou
 
   const handleDoubleClick = () => {
     setIsEditing(true);
+  };
+
+  const handleDrag = (e, data) => {
+    onMove(id, { x: data.x, y: data.y });
   };
 
   const handleTextChange = (e) => {
@@ -37,7 +41,7 @@ function Player({ id, initialPosition, playerName, selectedPlayer, onSelect, rou
   const isSelected = selectedPlayer === id;
 
   return (
-    <Draggable>
+    <Draggable >
       <g onDoubleClick={handleDoubleClick} onClick={handleClick} className="player">
         {/* Draw the route with arrow on the last line */}
         {route && route.map((point, index, arr) => {

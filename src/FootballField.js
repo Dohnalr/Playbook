@@ -27,6 +27,28 @@ function FootballField({ width, height }) {
     }
   };
 
+  const handlePlayerMove = (playerId, newPosition) => {
+    // Update player position
+    const updatedPlayers = players.map(player => {
+      if (player.id === playerId) {
+        return { ...player, x: newPosition.x, y: newPosition.y };
+      }
+      return player;
+    });
+    setPlayers(updatedPlayers);
+
+    // Update route for the moved player
+    if (routes[playerId]) {
+      const initialPosition = routes[playerId][0];
+      const updatedRoute = routes[playerId].map(point => {
+        return {
+          x: point.x - initialPosition.x + newPosition.x,
+          y: point.y - initialPosition.y + newPosition.y
+        };
+      });
+      setRoutes({ ...routes, [playerId]: updatedRoute });
+    }
+  };
 
   const handleAddPlayer = () => {
     const newPlayer = {
