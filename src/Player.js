@@ -35,17 +35,28 @@ function Player({ id, initialPosition, playerName, selectedPlayer, onSelect, rou
   };
 
   const isSelected = selectedPlayer === id;
+
   return (
     <Draggable>
       <g onDoubleClick={handleDoubleClick} onClick={handleClick} className="player">
-        {/* Draw the route */}
-        {route && route.map((point, index) => (
-          <line key={index} x1={point.x} y1={point.y} x2={route[index + 1]?.x || point.x} y2={route[index + 1]?.y || point.y} stroke="red" strokeWidth="2" />
-        ))}
+        {/* Draw the route with arrow on the last line */}
+        {route && route.map((point, index, arr) => {
+          const isLastPoint = index === arr.length - 2; // Second last point in the array
+          return (
+            <line
+              key={index}
+              x1={point.x}
+              y1={point.y}
+              x2={arr[index + 1]?.x || point.x}
+              y2={arr[index + 1]?.y || point.y}
+              stroke="red"
+              strokeWidth="2"
+              markerEnd={isLastPoint ? "url(#arrowhead)" : ""}
+            />
+          );
+        })}
         {/* Player representation */}
-        {
-          <circle cx={initialPosition.x} cy={initialPosition.y} r="12" fill="whitesmoke" strokeWidth="2" stroke={isSelected ? "blue" : "black"} />
-        }
+        <circle cx={initialPosition.x} cy={initialPosition.y} r="12" fill="whitesmoke" strokeWidth="2" stroke={isSelected ? "blue" : "black"} />
         {!isEditing ? (
           <text
             x={initialPosition.x}
