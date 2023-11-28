@@ -3,17 +3,16 @@ import Player from './Player'; // Ensure this import is correct
 
 function FootballField({ width, height }) {
   const [players, setPlayers] = useState([
-    { id: 1, x: 400, y: 350, playerName: 'C' },
-    { id: 2, x: 370, y: 350, playerName: 'LG' },
-    // ... initial players
+    { id: 1, x: 100, y: 100, playerName: 'A1'},
+    { id: 2, x: 200, y: 200, playerName: 'B2' },
+    { id: 3, x: 300, y: 300, playerName: 'C3' },
+    // ... add more players as needed
   ]);
 
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [nextId, setNextId] = useState(3);
 
   // Drawing routes
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [routes, setRoutes] = useState({});
   const svgRef = useRef(null);
 
   const handleSelectPlayer = (id) => {
@@ -53,39 +52,12 @@ function FootballField({ width, height }) {
     setSelectedPlayer(null);
   };
 
-  /* Drawing routes */
-  const startDrawing = (player_id) => {
-    setIsDrawing(true);
-  //  setDrawingPlayer(player_id);
-  };
-
-  const handleMouseMove = (e) => {
-    if (!isDrawing || selectedPlayer === null || !svgRef.current) return;
-
-    const svgRect = svgRef.current.getBoundingClientRect();
-    const newRoute = [
-      ...(routes[selectedPlayer] || []),
-      { x: e.clientX - svgRect.left, y: e.clientY - svgRect.top }
-    ];
-    setRoutes({ ...routes, [selectedPlayer]: newRoute });
-  };
-
-  const handleMouseUp = () => {
-    setIsDrawing(false);
-  };
-
-  const toggleDrawing = () => {
-    if (selectedPlayer) {
-      setIsDrawing(!isDrawing);
-    }
-  };
-
   return (
     <div>
       <svg width={width} height={height} style={{ backgroundColor: 'whitesmoke' }}
         //onClick={handleFieldClick}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}>
+        
+        >
         {/* Insert PNG Image */}
         <image href={`${process.env.PUBLIC_URL}/greaypx.png`} x="0" y="0" width={width} height={height} />
 
@@ -93,13 +65,11 @@ function FootballField({ width, height }) {
         {players.map(player => (
           <Player
             key={player.id}
-            onClick={() => startDrawing(player.id)}
             id={player.id}
             initialPosition={player}
             playerName={player.playerName}
             selectedPlayer={selectedPlayer}
             onSelect={handleSelectPlayer}
-            route={routes[player.id]} // Pass the route for each player
             className="player"
           />
         ))}
@@ -108,7 +78,6 @@ function FootballField({ width, height }) {
       <div style={controlBarStyle}>
         <button onClick={handleAddPlayer} style={buttonStyle}>Add Player</button>
         <button onClick={handleRemovePlayer} disabled={!selectedPlayer} style={buttonStyle}>Remove Selected Player</button>
-        <button onClick={toggleDrawing} disabled={!selectedPlayer} style={buttonStyle}>{isDrawing ? 'Stop Drawing' : 'Draw Route'}</button>
       </div>
     </div>
 
